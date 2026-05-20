@@ -1,101 +1,153 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Image from "next/image";
+import ChildrenFields, { FormValues } from "@/components/ChildrenFields";
 
-export default function Home() {
+export default function HomePage() {
+  const [success, setSuccess] = useState(false);
+  const [serverError, setServerError] = useState("");
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    defaultValues: {
+      parentName: "",
+      parentPhone: "",
+      children: [{ name: "", ageCategory: "" }],
+    },
+  });
+
+  const onSubmit = async (data: FormValues) => {
+    setServerError("");
+    try {
+      const res = await fetch("/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        setServerError(err.error || "A apărut o eroare. Încearcă din nou.");
+        return;
+      }
+
+      setSuccess(true);
+      reset();
+    } catch {
+      setServerError("A apărut o eroare de rețea. Încearcă din nou.");
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="min-h-screen bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-xl">
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+        {/* Church header */}
+        <div className="text-center mb-7">
+          <div className="flex justify-center mb-5">
             <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/geneza-logo.png"
+              alt="Biserica Geneza Oradea"
+              width={180}
+              height={64}
+              className="brightness-0 invert"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+          <div className="w-16 h-px bg-blue-400/40 mx-auto mb-5" />
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            Activitate de 1 Iunie
+          </h1>
+          <p className="text-blue-200 mt-2 text-sm font-light">
+            Completați formularul de mai jos pentru a înregistra participarea copiilor dumneavoastră.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          {success ? (
+            <div className="px-8 py-14 text-center">
+              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg className="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                Înregistrare confirmată
+              </h2>
+              <p className="text-gray-500 text-sm mb-7">
+                Datele au fost transmise cu succes. Vă așteptăm pe 1 Iunie!
+              </p>
+              <button
+                onClick={() => setSuccess(false)}
+                className="px-6 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 text-sm font-medium transition-colors"
+              >
+                Înregistrează alt copil
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-8 space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Nume și Prenume Părinte <span className="text-red-500">*</span>
+                </label>
+                <input
+                  {...register("parentName", { required: "Câmp obligatoriu" })}
+                  placeholder="ex: Popescu Ion"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+                {errors.parentName && (
+                  <p className="text-red-500 text-xs mt-1.5">{errors.parentName.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Număr de Telefon <span className="text-red-500">*</span>
+                </label>
+                <input
+                  {...register("parentPhone", { required: "Câmp obligatoriu" })}
+                  placeholder="ex: 0712 345 678"
+                  type="tel"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+                {errors.parentPhone && (
+                  <p className="text-red-500 text-xs mt-1.5">{errors.parentPhone.message}</p>
+                )}
+              </div>
+
+              <div className="border-t border-gray-100 pt-3">
+                <h2 className="text-sm font-medium text-gray-700 mb-3">Date copii</h2>
+                <ChildrenFields control={control} register={register} errors={errors} />
+              </div>
+
+              {serverError && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3">
+                  {serverError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 bg-blue-700 text-white rounded-xl font-semibold text-sm hover:bg-blue-800 disabled:opacity-50 transition-colors"
+              >
+                {isSubmitting ? "Se transmite..." : "Trimite înregistrarea"}
+              </button>
+            </form>
+          )}
+        </div>
+
+        <p className="text-center text-xs text-blue-300/60 mt-6">
+          Biserica Geneza Oradea • Activitate 1 Iunie 2026
+        </p>
+      </div>
+    </main>
   );
 }
