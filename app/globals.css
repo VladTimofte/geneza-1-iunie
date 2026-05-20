@@ -20,6 +20,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Prevent iOS auto-zoom on input focus (triggered when font-size < 16px) */
+@supports (-webkit-touch-callout: none) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

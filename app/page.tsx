@@ -98,7 +98,12 @@ export default function HomePage() {
                   Nume și Prenume Părinte <span className="text-red-500">*</span>
                 </label>
                 <input
-                  {...register("parentName", { required: "Câmp obligatoriu" })}
+                  {...register("parentName", {
+                    required: "Câmp obligatoriu",
+                    validate: (v) =>
+                      v.trim().split(/\s+/).filter(Boolean).length >= 2 ||
+                      "Introduceți numele și prenumele complet",
+                  })}
                   placeholder="ex: Popescu Ion"
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />

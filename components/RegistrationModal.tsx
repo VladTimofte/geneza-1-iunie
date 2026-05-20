@@ -71,7 +71,12 @@ export default function RegistrationModal({ initial, onSave, onClose }: Props) {
               Nume & Prenume Părinte <span className="text-red-500">*</span>
             </label>
             <input
-              {...register("parentName", { required: "Câmp obligatoriu" })}
+              {...register("parentName", {
+                required: "Câmp obligatoriu",
+                validate: (v) =>
+                  v.trim().split(/\s+/).filter(Boolean).length >= 2 ||
+                  "Introduceți numele și prenumele complet",
+              })}
               placeholder="ex: Popescu Ion"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
             />
