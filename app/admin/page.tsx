@@ -159,16 +159,28 @@ export default function AdminPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
         {/* Stats */}
-        <div className="mb-5 grid grid-cols-2 gap-3 sm:flex sm:gap-4">
-          <div className="bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
-            <p className="text-slate-500 text-xs mb-0.5">Total înscrieri</p>
-            <p className="font-bold text-blue-700 text-2xl">{registrations.length}</p>
+        <div className="mb-5 sm:flex sm:gap-4 space-y-3 sm:space-y-0">
+          <div className="grid grid-cols-2 gap-3 sm:contents">
+            <div className="bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
+              <p className="text-slate-500 text-xs mb-0.5">Total înscrieri</p>
+              <p className="font-bold text-blue-700 text-2xl">{registrations.length}</p>
+            </div>
+            <div className="bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
+              <p className="text-slate-500 text-xs mb-0.5">Total copii</p>
+              <p className="font-bold text-blue-700 text-2xl">
+                {registrations.reduce((acc, r) => acc + r.children.length, 0)}
+              </p>
+            </div>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
-            <p className="text-slate-500 text-xs mb-0.5">Total copii</p>
-            <p className="font-bold text-blue-700 text-2xl">
-              {registrations.reduce((acc, r) => acc + r.children.length, 0)}
-            </p>
+          <div className="grid grid-cols-3 gap-3 sm:contents">
+            {["3-6 ani", "7-9 ani", "10-13 ani"].map((cat) => (
+              <div key={cat} className="bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
+                <p className="text-slate-500 text-xs mb-0.5">Copii {cat}</p>
+                <p className="font-bold text-blue-700 text-2xl">
+                  {registrations.reduce((acc, r) => acc + r.children.filter(c => c.ageCategory === cat).length, 0)}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
